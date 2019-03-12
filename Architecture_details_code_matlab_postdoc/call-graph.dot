@@ -1,0 +1,150 @@
+digraph call_graph {
+    rankdir=LR;
+    node[shape=Mrecord, color=Blue, fontcolor=Blue];
+    2[label=Process_trajectories___Process_trajectories]
+    4[label=Read_Plate_Design___Read_Plate_Design]
+    5[label=FitQuadratic_Ftest___FitQuadratic_Ftest]
+    6[label=Ftest_flat___FitQuadratic_Ftest]
+    8[label=filter_DeltaMOMP___filter_DeltaMOMP]
+    9[label=Load_Plate_Data___Load_Plate_Data]
+    10[label=assert_TrajLength___Load_Plate_Data]
+    11[label=LoadFitData___LoadFitData]
+    12[label=compile_ExpData___compile_ExpData]
+    13[label=Evaluate_MOMPTime___Evaluate_MOMPTime]
+    14[label=evalMOMP___Evaluate_MOMPTime]
+    15[label=filter_smooth___Evaluate_MOMPTime]
+    16[label=eval_Trajnoise___Evaluate_MOMPTime]
+    17[label=derivate_score___Evaluate_MOMPTime]
+    18[label=cutoff_dist_prob___Evaluate_MOMPTime]
+    19[label=DetermineMOMP___Evaluate_MOMPTime]
+    23[label=get_newfigure___get_newfigure]
+    27[label=TableToString___TableToString]
+    30[label=max_cntvalue___max_cntvalue]
+    32[label=strcell2mat___strcell2mat]
+    34[label=isvariable___isvariable]
+    35[label=cellstr2str___cellstr2str]
+    36[label=ConvertToStr___ConvertToStr]
+    38[label=cellcell2cellstr___cellcell2cellstr]
+    39[label=MATLABsafename___MATLABsafename]
+    41[label=ReplaceName___ReplaceName]
+    43[label=table2cellstr___table2cellstr]
+    44[label=warnassert___warnassert]
+    46[label=ToColumn___ToColumn]
+    47[label=TableToCategorical___TableToCategorical]
+    48[label=cell2csv___cell2csv]
+    49[label=get_newaxes___get_newaxes]
+    51[label=cell2tsv___cell2tsv]
+    56[label=argmax___argmax]
+    58[label=ReducName___ReducName]
+    59[label=warnprintf___warnprintf]
+    62[label=AnyToString___AnyToString]
+    63[label=ToRow___ToRow]
+    64[label=cellfun2___cellfun2]
+    65[label=eqtable___eqtable]
+    67[label=table2tsv___table2tsv]
+    69[label=disp2str___disp2str]
+    71[label=SEM___SEM]
+    72[label=precomputed_normal_cdf___precomputed_normal_cdf]
+    73[label=ICcurve_fit___ICcurve_fit]
+    75[label=plot_vbox___plot_vbox]
+    76[label=plot_multidims___plot_multidims]
+    80[label=get_subaxes___get_subaxes]
+    81[label=plot_fits_multidims___plot_fits_multidims]
+    82[label=stitchmat___stitchmat]
+    83[label=r0merge___r0merge]
+    85[label=bgmesh___bgmesh]
+    87[label=mergesites___mergesites]
+    88[label=icrprun___icrprun]
+    89[label=getshift___getshift]
+    90[label=pyramidize___getshift]
+    91[label=intshift___getshift]
+    92[label=lowpass___lowpass]
+    93[label=wellname___wellname]
+    94[label=edginess___edginess]
+    95[label=quadpk2d___quadpk2d]
+    96[label=extract___extract]
+    97[label=segmorph___segmorph]
+    99[label=shiftimg___shiftimg]
+    100[label=trackbidir___trackbidir]
+    101[label=momploc___momploc]
+    2 -> 64
+    4 -> 35
+    4 -> 64
+    5 -> 6
+    5 -> 56
+    8 -> 23
+    9 -> 10
+    11 -> 4
+    11 -> 9
+    11 -> 13
+    11 -> 2
+    11 -> 5
+    12 -> 41
+    12 -> 35
+    12 -> 64
+    13 -> 14
+    14 -> 15
+    14 -> 16
+    14 -> 17
+    14 -> 18
+    14 -> 72
+    14 -> 19
+    18 -> 72
+    27 -> 63
+    27 -> 64
+    27 -> 69
+    30 -> 59
+    30 -> 56
+    32 -> 64
+    35 -> 35
+    36 -> 36
+    38 -> 64
+    39 -> 39
+    41 -> 41
+    43 -> 27
+    44 -> 59
+    47 -> 63
+    51 -> 48
+    58 -> 58
+    62 -> 64
+    67 -> 51
+    67 -> 43
+    71 -> 71
+    71 -> 46
+    73 -> 63
+    73 -> 46
+    73 -> 73
+    75 -> 75
+    76 -> 47
+    76 -> 34
+    76 -> 49
+    76 -> 43
+    76 -> 65
+    76 -> 62
+    80 -> 49
+    81 -> 34
+    81 -> 47
+    81 -> 49
+    81 -> 62
+    82 -> 93
+    82 -> 89
+    83 -> 93
+    83 -> 85
+    83 -> 89
+    83 -> 96
+    83 -> 100
+    87 -> 93
+    88 -> 96
+    88 -> 93
+    88 -> 100
+    89 -> 92
+    89 -> 90
+    89 -> 91
+    89 -> 95
+    96 -> 85
+    96 -> 89
+    96 -> 99
+    96 -> 101
+    96 -> 94
+    97 -> 97
+}
