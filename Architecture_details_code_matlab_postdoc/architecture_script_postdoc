@@ -1,0 +1,217 @@
+11/03/19-13/03/19
+
+lancement veritable du stage car donnees et pc 
+
+- faire un descriptif de l'architecture des codes du postdoc qui a travaille sur un sujet 
+similaire sur matlab
+- voir les fonctions les input et output 
+- quelles méthodes de tracking il a utilisé 
+
+==> en gros décrypter, décortiquer ces scripts et le cheminement qu'il
+a fait pour voir comment nous on pourrait faire avec notre vidéo 
+et ptetre d'autres logiciels 
+
+
+###########################################################
+############### cells tracking ############################
+###########################################################
+
+travaille de cellules sur plaque avec du coup plrs puits et donc plrs sites 
+1 cell/puit ????? 
+attention site et puit différent !!!! 
+
+trace pack c'est quoi ?? 
+
+IC RP = rapporteur ? (dans readme marqué rapporteur ICRP HeLas )
+
+CFP cyan fluorescent protein utilisée dans l'article car linked by a peptide
+derived from the natural initiator caspase substrate Bid; proteolysis of this 
+linker changes the FRET ratio over time, FR(t)
+
+GFP green fluorescent protein 
+YFP yellow fluorescent protein
+
+###############################################################
+script : bgmesh.m (cell tracking)
+
+bgmesh est un fond d'écran en maillage (grid) 
+input : image, dx et dy qui sont la taille de l'image 
+
+#############################################################
+script : edginess.m
+
+fonction edginess : pour déterminer les bords metrique de la mort à partir de la gfp (green prot fluor)
+prend en input le masque de la cellule unique, l'image, xroi et yroi pour 
+le calcul du centroïde de la cellule identifiée par le mask
+
+fonction g : pour déterminer les arêtes dans 1 image qui prend edginess en param 
+
+###############################################################
+script extract.m 
+
+script qui va calculer les resulats sur toutes les frames (=frm)
+après tous les traitements : bgmesh, segmentation par watershed et threshold 
+alignement channels pour corriger les aberration chromatique (=aberration 
+optique qui produit différentes mises au point en fonction de la longueur d'onde.
+On observe alors une image floue et aux courtours irisés. Résulte de la
+décomposition de la lumière blanche en plrs bandes de couleurs.)
+
+bwlabel sur matlab renvoie une matrice L de la meme taille que l'image
+contenant des étiquettes pour les objets connectés. La matrice L comporte
+des éléments qui sont étiquetés avec des valeurs entières supérieures ou égales à 0.
+0=pixels qui constituent l'arrière plan 
+1= pixels qui constituent un objet 
+2= pixels qui constituent un 2ème objet 
+etc...  
+(cf image IMG_7626.JPG)
+
+regionprops : va mesurer les propriétés des régions d'image ici L, l'aire et le centroïd 
+
+application bwmorph avec masque erode 
+
+jitter : sur matlab ==> ajouter une petite quantité de bruit à un tableau.
+Idéal pour le traitement du signal ou la théorie du chaos.
+Sinon c'est aussi un filtre (d'où l'échelle (jitter_scale=0.25)) qui plus on 
+l'augmente, plus on va avoir un effet artistique qui remplace chaque pixel 
+de l'image par un pixel aléatoire provenant d'un voisinage (du rayon spécifié).
+S'appelle également filtre de gigue.
+
+
+##############################################################
+script ffcorr.m 
+
+## pas sur le graph 
+
+but faire correction flat field ==> correction du champ de variations de la réponse des 
+pixels, des defauts du capteur utilisé etc. Supprimer les artefacts des images 2-D causés 
+par des variations de la sensibilité pixel à pixel du détecteur et/ou par des 
+distorsions dans le chemin optique. Procédure d'étalonnage standard. 
+
+==> amélioration qualité image 
+
+fonction ffcorr qui prend en param l'image et un objet et qui va faire une correction
+à plat selon l'étalonnage 
+
+fonction im=ffcorr : correction approximative du champ plat de l'image pris avec 
+un certain objet de configuration d'imagerie 
+
+PE1334-10xLWD 'live cell operetta' avec objectif 10x long WD est une option valide 
+
+###################################################################
+script getshift.m (exist aussi sur opencv)
+
+script permettant de déterminer le décalage entre 2 images en particulier le déplacement 
+de l'image d'intérêt par rapport à une image de réf en fct de l'intensité de corrélation.
+prend en param l'image et une image de réf, max_shift qui est le décalage le plus important 
+à prendre en compte 
+
+appel fonction pyramidize, intshift, lowpass et quadpk2d
+
+###################################################################
+script icrprun.m 
+
+permet l'anayse IC-RP ?????
+
+permet de traiter les résultats de tous les sites 
+
+fonction rc quant à elle va traiter qu'un seul site désigné dans les param 
+va sortir en résultats, le nom de la ligne et colonne du site, le fret, l'aire, cfp
+momp, rfp, x, y edge, dx, dy et frmidx 
+utilise la fonction mergesites (dans le script du même nom), pour combiner les multisites
+dans un seul pack de traces.
+
+% momp=mitochondrial outer membrane permeabilization (permet le suivi de la mort cellulaire)
+
+#####################################################################
+script mergesites.m 
+
+cf au-dessus 
+
+######################################################################
+script lowpass.m 
+
+création d'un filtre passe bas ????
+
+######################################################################
+script momploc.m 
+
+permet de calculer la mort métrique "momp" par localisation du rapporteur momp 
+prend en param image d'une GFP uniformément localisée, une image du rapporteur et 
+une matrice de masque de la cellule d'intérêt 
+
+######################################################################
+script quadpk2d.m 
+
+permet de calculer le décalage sous pixel par interpolation de crête quantique.
+dx et dy et b en param car calcul décalage du sous pixel dx dy sur le centre du pic 
+de la matrice 3*3 b .
+
+##########################################################################
+script rOmerge.m 
+
+joint l'estimation de la fluorescence de la RFP à partir du point initial.
+permet de lire la fluorescence de RFP des images du sous répertoires pth_base 
+et l'assigne au traces de FRET du film 
+prend en param la base, son sous répertoire rofret, sous répertoire frfret, la ligne 
+et colonne du puit et enfin le nb de sites par puits 
+
+########################################################################
+script regpath.m 
+
+## pas trouvé dans le graphe
+
+permet d'enregistrer tous les fichiers image trouvés dans le répertoire (spécifié) et issus du 
+puit spécifié par arg row et arg col.
+enregistre dans fichier f qui comporte ligne et col du puit, le site, le canal, 
+la frame index et le nom du fichier image.
+
+############################################################################
+script segmorph ??? pas vraiment sûre 
+
+## dans graph, il est sur lui meme 
+
+permet la mesure métrique de la mort ds le domaine temporel. 
+prend en param le vecteur de 3 pts de changement et la somme des résidus pour 
+retourner la trajectoire de mort et les pts de changement les plus probables selon une 
+hypothèse résiduelle moyenne la moins élevée.
+
+
+#############################################################################
+script shiftimg 
+
+appelé dans script extract donc dans l'extraction de données de cellule unique à partir 
+d'une cellule reporteur epitheliale fret 
+donc dans tous ce qui est traitement de l'image (watershed etc)
+
+permet le décalage d'une image d'un décalage spécifié avec une résolution inférieure au pixel.
+retourne une image SRC décalée de dx et dy (param du pixel)  
+
+## à voir avec quadpk2d car fait aussi décalage de l'image 
+
+################################################################################
+script stitchmat 
+
+permet de connecter les packs de traces à partir de 2 segements temporels.
+enregistré dans fichier wellname ou appel ce fichier ?? 
+relié à getshift pour décalage.
+
+prend en param le puit (row et col), 2 répertoires dans lesquels on trouve les 2 segements
+et mode (ici varargin=identité de cellule) 
+
+
+##############################################################################
+script trackbidir 
+
+permet de suivre les cellules en identifiant les plus proches voisins.
+renvoie la matrice de suivi TR (nb de pts dans le temps x nb de cellules) 
+des index de de cellules dans la structure de resulats de segmentation res
+Seule une cellule qui est le voisin le + proche de son voisin le + proche dans 
+la trame suivante sera suivie.
+
+## attention !!!! approche qui ne marche pas pour des cellules très mobiles !!
+
+###############################################################################
+script wellname 
+
+comporte ligne et colonne 
+########" wellname doit être le répertoire en cours où sont stockés les résultats 
